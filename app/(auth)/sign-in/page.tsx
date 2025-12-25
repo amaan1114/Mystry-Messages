@@ -10,11 +10,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { signInSchema } from '@/Schemas/signInSchema';
 import { signIn } from 'next-auth/react';
+import { Loader2 } from 'lucide-react';
 
 
  function signin() {
 
   const [isSubmitting,setisSubmitting] = useState(false)
+  const [signingIn, setsigningIn] = useState(false)
   const router = useRouter();
 
 
@@ -31,6 +33,7 @@ import { signIn } from 'next-auth/react';
 
 
     const onSubmit = async (data:z.infer<typeof signInSchema>)=>{
+        setsigningIn(true)
       const result = await signIn('credentials',{
           redirect:false,
           email:data.email,
@@ -41,7 +44,9 @@ import { signIn } from 'next-auth/react';
         toast.error('Invalid email or password')
       }
       if(result?.url){
+        setsigningIn(false)
         router.replace('/dashboard')
+        
       }
 
     }
@@ -91,7 +96,7 @@ import { signIn } from 'next-auth/react';
                             )}
                         />
 
-                        <Button type="submit">SignIn</Button>
+                        <Button type="submit" disabled={signingIn}>{signingIn ? (<><Loader2 className="animate-spin w-5 h-5" />Signing in....</>) : "SignIn"}</Button>
                        
                       </form>
                      
