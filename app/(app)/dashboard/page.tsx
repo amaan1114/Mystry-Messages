@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { set } from "mongoose";
 import { useCallback, useEffect, useState } from "react"; 
 import { Message } from "@/model/User";
@@ -20,6 +20,7 @@ function dashboard() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading,setIsLoading] = useState(false);
   const [isSwitchLoading,setIsSwitchLoading] = useState(false);
+  const [profileUrl, setProfileUrl] = useState('');
 
   const handleDeleteMessage = (messageId:string)=>{
     setMessages(messages.filter((message)=>message._id.toString() !== messageId))
@@ -81,8 +82,10 @@ function dashboard() {
 
 
   const userName = session?.user.username
-  const baseUrl = `${window.location.protocol}//${window.location.host}`
-  const profileUrl = `${baseUrl}/u/${userName}`; 
+    useEffect(() => {
+      const baseUrl = `${window.location.protocol}//${window.location.host}`;
+      setProfileUrl(`${baseUrl}/u/${userName}`);
+    }, [userName]);
 
   const copyToClipboard = ()=>{
     navigator.clipboard.writeText(profileUrl);
